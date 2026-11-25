@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Array & Sorting Visualizer | Gaurav Dangi</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1c2033;--mu:#667;--bd:#dde1ee;--ac:#5b5fe8;--c:#f5a623;--s:#e5484d;--g:#2fb36d;--p:#8e4ec6;--x:#cfd3e2;--bar:#9db0ff;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#12141f;--card:#1b1f31;--tx:#e8eaf5;--mu:#98a;--bd:#2e3350;--ac:#7c80ff;--x:#2e3350;--bar:#4c5bb8}}
+:root[data-theme=dark]{--bg:#12141f;--card:#1b1f31;--tx:#e8eaf5;--mu:#98a;--bd:#2e3350;--ac:#7c80ff;--x:#2e3350;--bar:#4c5bb8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:18px 16px 6px;max-width:900px;margin:auto}h1{margin:0;font-size:22px}header p{margin:4px 0 0;color:var(--mu);font-size:13px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 16px;max-width:900px;margin:auto}
+nav button{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:7px 12px;border-radius:20px;font-size:13px;cursor:pointer}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{max-width:900px;margin:auto;padding:0 16px 30px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+h2{margin:0 0 6px;font-size:18px}h3{margin:0 0 6px;font-size:14px;color:var(--mu);text-transform:uppercase;letter-spacing:.04em}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:8px 0}
+label{font-size:12px;color:var(--mu);display:flex;flex-direction:column;gap:2px}
+input{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:7px 8px;font-size:14px;width:110px}input#arr{width:210px}
+button.b{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}button.b.alt{background:var(--bd);color:var(--tx)}
+#stage{display:flex;gap:4px;align-items:flex-end;justify-content:center;height:190px;padding:8px 0;overflow-x:auto}
+.cell{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:34px;font-size:12px}
+.bar{width:30px;border-radius:5px 5px 0 0;background:var(--bar);color:#fff;font-weight:600;display:flex;align-items:flex-start;justify-content:center;padding-top:2px;transition:height .25s,background .2s}
+.bar.c{background:var(--c)}.bar.s{background:var(--s)}.bar.g{background:var(--g)}.bar.p{background:var(--p)}.bar.x{background:var(--x);color:var(--mu)}
+.ix{color:var(--mu);margin-top:2px}.ad{color:var(--ac);font-size:10px;font-weight:600}
+#msg{min-height:44px;padding:8px 10px;border-left:4px solid var(--ac);background:var(--bg);border-radius:6px;font-size:14px}
+pre{margin:0;overflow-x:auto;background:var(--bg);padding:10px;border-radius:8px;font:13px/1.5 ui-monospace,Menlo,monospace}
+.leg{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--mu);margin-top:8px}.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+table{border-collapse:collapse;font-size:13px}td,th{border:1px solid var(--bd);padding:4px 8px}
+</style></head><body>
+<header><h1>📊 Array & Sorting Visualizer</h1><p>Step-by-step simulation, algorithm and complexity for each concept.</p><p style="margin-top:8px">Made by <b>Gaurav Dangi</b> · B.Tech Cyber Security, Acropolis Institute of Technology, Indore · <a href="https://github.com/gauravdangi" target="_blank" rel="noopener" style="color:var(--ac);font-weight:600">🐙 GitHub: Gaurav</a></p></header>
+<nav id="nav"></nav>
+<main>
+<div class="card"><h2 id="tt"></h2><div id="ds"></div></div>
+<div class="card"><h3>Simulation</h3>
+<div class="row">
+<label>Array (comma separated)<input id="arr" value="38,27,43,3,9,82,10"></label>
+<label data-f="t">Target / Value<input id="t" type="number" value="43"></label>
+<label data-f="p">Position / Index<input id="p" type="number" value="2"></label>
+<label data-f="b">Base address<input id="b" type="number" value="1000"></label>
+<label data-f="w">Element size (bytes)<input id="w" type="number" value="4"></label>
+<label data-f="l">Lower bound (LB)<input id="l" type="number" value="0"></label>
+<button class="b alt" id="rnd">🎲 Random</button></div>
+<div class="row"><button class="b" id="run">▶ Play</button><button class="b alt" id="prev">⏮ Back</button><button class="b alt" id="next">Step ⏭</button><button class="b alt" id="rst">↺ Reset</button>
+<label>Speed<input id="sp" type="range" min="1" max="10" value="6" style="width:110px;padding:0"></label></div>
+<div id="stage"></div><div id="msg"></div>
+<div class="leg"><span><i style="background:var(--c)"></i>comparing</span><span><i style="background:var(--s)"></i>swap/write</span><span><i style="background:var(--p)"></i>pivot/min/bounds</span><span><i style="background:var(--g)"></i>sorted/found</span><span id="fr"></span></div></div>
+<div class="card"><h3>Algorithm</h3><pre id="al"></pre></div>
+<div class="card"><h3>Complexity</h3><div id="cx"></div></div>
+</main>
+<script>
+const $=i=>document.getElementById(i);
+/* ---------- generators: each yield = [message, marks{index:class}] and mutates array a ---------- */
+function*addr(a,o){const{b,w,l}=o;for(let i=0;i<a.length;i++){yield[`Address(a[${l+i}]) = Base + W × (i − LB) = ${b} + ${w} × (${l+i} − ${l}) = ${b+w*i}`,{[i]:'c'}]}
+ const k=Math.min(Math.max(o.p,l),l+a.length-1);yield[`Query: address of a[${k}] = ${b} + ${w} × (${k} − ${l}) = ${b+w*(k-l)}`,{[k-l]:'g'}]}
+function*ins(a,o){const n=a.length,p=Math.min(Math.max(o.p,0),n);a.push(null);yield[`Array has no free slot, so we extend it by one. Insert ${o.t} at index ${p}.`,{[n]:'p'}];
+ for(let i=n;i>p;i--){a[i]=a[i-1];a[i-1]=null;yield[`Shift a[${i-1}] → a[${i}] to make room`,{[i]:'s',[i-1]:'p'}]}
+ a[p]=o.t;yield[`Place ${o.t} at index ${p}. Insertion done (${n-p} shifts).`,{[p]:'g'}]}
+function*del(a,o){const n=a.length,p=Math.min(Math.max(o.p,0),n-1);yield[`Delete a[${p}] = ${a[p]}`,{[p]:'s'}];
+ for(let i=p;i<n-1;i++){a[i]=a[i+1];a[i+1]=null;yield[`Shift a[${i+1}] ← into a[${i}]`,{[i]:'s',[i+1]:'p'}]}
+ yield[`Last slot is now free; size becomes ${n-1}. (${n-1-p} shifts)`,{[n-1]:'x'}];a.pop();yield['Deletion complete.',{}]}
+function*lin(a,o){for(let i=0;i<a.length;i++){yield[`Compare a[${i}]=${a[i]} with target ${o.t}`,{[i]:'c'}];if(a[i]==o.t){yield[`Found ${o.t} at index ${i} after ${i+1} comparison(s).`,{[i]:'g'}];return}}
+ yield[`${o.t} not found (${a.length} comparisons).`,{}]}
+function*bin(a,o){a.sort((x,y)=>x-y);yield['Binary search needs a sorted array, so we sort it first.',{}];let lo=0,hi=a.length-1;
+ const mk=(m)=>{const r={};for(let i=0;i<a.length;i++)r[i]=i<lo||i>hi?'x':'';r[lo]='p';r[hi]='p';if(m!=null)r[m]='c';return r};
+ while(lo<=hi){const m=(lo+hi)>>1;yield[`low=${lo}, high=${hi}, mid=⌊(${lo}+${hi})/2⌋=${m}; a[${m}]=${a[m]}`,mk(m)];
+  if(a[m]==o.t){yield[`Found ${o.t} at index ${m}.`,{[m]:'g'}];return}
+  if(a[m]<o.t){yield[`${a[m]} < ${o.t} → search right half, low=${m+1}`,mk(m)];lo=m+1}else{yield[`${a[m]} > ${o.t} → search left half, high=${m-1}`,mk(m)];hi=m-1}}
+ yield[`low > high → ${o.t} not found.`,{}]}
+function*sel(a){const n=a.length,g={};for(let i=0;i<n-1;i++){let m=i;for(let j=i+1;j<n;j++){yield[`Pass ${i+1}: compare a[${j}]=${a[j]} with min a[${m}]=${a[m]}`,{...g,[j]:'c',[m]:'p'}];if(a[j]<a[m])m=j}
+ [a[i],a[m]]=[a[m],a[i]];g[i]='g';yield[`Swap minimum into index ${i}`,{...g,[m]:m==i?'g':'s'}]}g[n-1]='g';yield['Sorted ✔',g]}
+function*bub(a){const n=a.length,g={};for(let i=0;i<n-1;i++){let sw=false;for(let j=0;j<n-1-i;j++){yield[`Pass ${i+1}: compare a[${j}]=${a[j]} and a[${j+1}]=${a[j+1]}`,{...g,[j]:'c',[j+1]:'c'}];
+ if(a[j]>a[j+1]){[a[j],a[j+1]]=[a[j+1],a[j]];sw=true;yield['Out of order → swap',{...g,[j]:'s',[j+1]:'s'}]}}g[n-1-i]='g';if(!sw){for(let k=0;k<n;k++)g[k]='g';break}}g[0]='g';yield['Sorted ✔',g]}
+function*isort(a){const n=a.length,g={0:'g'};for(let i=1;i<n;i++){const k=a[i];let j=i-1;yield[`Pick key = ${k} (index ${i})`,{...g,[i]:'p'}];
+ while(j>=0&&a[j]>k){a[j+1]=a[j];yield[`${a[j]} > ${k} → shift right`,{...g,[j+1]:'s',[j]:'c'}];a[j]=k;j--}a[j+1]=k;g[i]='g';yield[`Insert ${k} at index ${j+1}`,{...g,[j+1]:'g'}]}
+ const f={};a.forEach((_,i)=>f[i]='g');yield['Sorted ✔',f]}
+function*qs(a,l,r,g){if(l>=r){if(l==r)g[l]='g';return}const p=a[r];let i=l;for(let j=l;j<r;j++){yield[`Pivot=${p}. Compare a[${j}]=${a[j]} with pivot`,{...g,[r]:'p',[j]:'c',[i]:'s'}];
+ if(a[j]<p){[a[i],a[j]]=[a[j],a[i]];if(i!=j)yield[`${a[i]} < pivot → swap into position ${i}`,{...g,[r]:'p',[i]:'s',[j]:'s'}];i++}}
+ [a[i],a[r]]=[a[r],a[i]];g[i]='g';yield[`Pivot ${p} placed at its final index ${i}`,{...g}];yield*qs(a,l,i-1,g);yield*qs(a,i+1,r,g)}
+function*quick(a){const g={};yield*qs(a,0,a.length-1,g);yield['Sorted ✔',g]}
+function*ms(a,l,r){if(l>=r)return;const m=(l+r)>>1;yield*ms(a,l,m);yield*ms(a,m+1,r);const L=a.slice(l,m+1),R=a.slice(m+1,r+1);let i=0,j=0,k=l;
+ const mk=k=>{const o={};for(let x=l;x<=r;x++)o[x]='c';o[k]='s';return o};
+ while(i<L.length||j<R.length){a[k]=j>=R.length||(i<L.length&&L[i]<=R[j])?L[i++]:R[j++];yield[`Merge [${l}..${m}] & [${m+1}..${r}]: write ${a[k]} at index ${k}`,mk(k)];k++}}
+function*merge(a){yield*ms(a,0,a.length-1);const g={};a.forEach((_,i)=>g[i]='g');yield['Sorted ✔',g]}
+function*shell(a){const n=a.length;for(let gap=n>>1;gap>0;gap>>=1){yield[`New gap = ${gap}: gapped insertion sort`,{}];
+ for(let i=gap;i<n;i++){const t=a[i];let j=i;while(j>=gap&&a[j-gap]>t){yield[`gap ${gap}: compare a[${j-gap}]=${a[j-gap]} > ${t} → move`,{[j]:'c',[j-gap]:'c'}];a[j]=a[j-gap];yield[`a[${j}] = ${a[j]}`,{[j]:'s'}];j-=gap}
+  a[j]=t;yield[`Place ${t} at index ${j}`,{[j]:'p'}]}}
+ const g={};a.forEach((_,i)=>g[i]='g');yield['Sorted ✔',g]}
+function*radix(a){const mx=Math.max(...a);for(let e=1;Math.floor(mx/e)>0;e*=10){const B=Array.from({length:10},()=>[]);
+ a.forEach(v=>B[Math.floor(v/e)%10].push(v));yield[`Digit place ${e}: buckets → `+B.map((b,d)=>b.length?`${d}:[${b}]`:'').filter(Boolean).join('  '),Object.fromEntries(a.map((_,i)=>[i,'c']))];
+ let k=0;for(const b of B)for(const v of b){a[k]=v;yield[`Collect ${v} (digit ${Math.floor(v/e)%10}) → index ${k}`,{[k]:'s'}];k++}}
+ const g={};a.forEach((_,i)=>g[i]='g');yield['Sorted ✔',g]}
+/* ---------- topic data ---------- */
+const O='Best / Avg / Worst: ',S=(t,s,d,al,cx)=>({t,s,d,al,cx});
+const T={
+address:{n:'Address Calc',f:'bwlp',gen:addr,d:'Elements of an array are stored in <b>contiguous memory</b>. Knowing the base address (B), the size of one element (W) and the lower bound (LB), the address of any element is computed in O(1) — this is why arrays give instant random access.',al:'Address(a[i]) = B + W × (i − LB)\n\n// 2-D (row-major, m×n, LB=0):\nAddress(a[i][j]) = B + W × (i × n + j)\n// 2-D (column-major):\nAddress(a[i][j]) = B + W × (j × m + i)',cx:'Access time O(1); space O(n). The "Position" field is the index whose address is queried.'},
+insert:{n:'Insertion',f:'tp',gen:ins,d:'To insert at position <i>p</i>, all elements from <i>p</i> to the end are shifted one place right (starting from the last), then the new value is written at <i>p</i>.',al:'INSERT(A, n, p, x)\n1. for i = n down to p+1\n2.     A[i] = A[i-1]      // shift right\n3. A[p] = x\n4. n = n + 1',cx:'Best O(1) (at end), Avg/Worst O(n) (at start). Space O(1).'},
+delete:{n:'Deletion',f:'p',gen:del,d:'To delete the element at position <i>p</i>, every element after it is shifted one place left to fill the gap, and the size is reduced by one.',al:'DELETE(A, n, p)\n1. x = A[p]\n2. for i = p to n-2\n3.     A[i] = A[i+1]      // shift left\n4. n = n - 1',cx:'Best O(1) (last element), Avg/Worst O(n). Space O(1).'},
+linear:{n:'Linear Search',f:'t',gen:lin,d:'Scans elements one by one from the start until the target is found or the array ends. Works on unsorted data.',al:'LINEAR_SEARCH(A, n, key)\n1. for i = 0 to n-1\n2.     if A[i] == key\n3.         return i\n4. return -1',cx:'Best O(1), Avg/Worst O(n). Space O(1).'},
+binary:{n:'Binary Search',f:'t',gen:bin,d:'Requires a <b>sorted</b> array. Compare the key with the middle element; discard the half that cannot contain it. Repeat until found or the range is empty.',al:'BINARY_SEARCH(A, n, key)\n1. low = 0, high = n-1\n2. while low <= high\n3.     mid = (low + high) / 2\n4.     if A[mid] == key  return mid\n5.     else if A[mid] < key  low = mid + 1\n6.     else high = mid - 1\n7. return -1',cx:'Best O(1), Avg/Worst O(log n). Space O(1).'},
+selection:{n:'Selection Sort',f:'',gen:sel,d:'Repeatedly finds the <b>minimum</b> of the unsorted part and swaps it to the front of the unsorted part. The sorted region grows from the left.',al:'SELECTION_SORT(A, n)\n1. for i = 0 to n-2\n2.     min = i\n3.     for j = i+1 to n-1\n4.         if A[j] < A[min]  min = j\n5.     swap A[i], A[min]',cx:O+'O(n²) / O(n²) / O(n²). Space O(1). Not stable; at most n−1 swaps.'},
+bubble:{n:'Bubble Sort',f:'',gen:bub,d:'Compares adjacent pairs and swaps them if out of order. After each pass, the largest remaining element "bubbles" to the end. Stops early if a pass makes no swap.',al:'BUBBLE_SORT(A, n)\n1. for i = 0 to n-2\n2.     swapped = false\n3.     for j = 0 to n-i-2\n4.         if A[j] > A[j+1]\n5.             swap A[j], A[j+1]; swapped = true\n6.     if not swapped  break',cx:O+'O(n) / O(n²) / O(n²). Space O(1). Stable.'},
+insertion:{n:'Insertion Sort',f:'',gen:isort,d:'Builds the sorted portion one element at a time: take the next element (key) and insert it into its correct place among the already sorted elements by shifting larger ones right.',al:'INSERTION_SORT(A, n)\n1. for i = 1 to n-1\n2.     key = A[i]; j = i-1\n3.     while j >= 0 and A[j] > key\n4.         A[j+1] = A[j]; j = j-1\n5.     A[j+1] = key',cx:O+'O(n) / O(n²) / O(n²). Space O(1). Stable; great for nearly sorted data.'},
+quick:{n:'Quick Sort',f:'',gen:quick,d:'Divide & conquer. Choose a <b>pivot</b> (last element here), partition so smaller elements are left of it and larger right (Lomuto partition), then recursively sort both sides.',al:'QUICK_SORT(A, l, r)\n1. if l < r\n2.     p = PARTITION(A, l, r)\n3.     QUICK_SORT(A, l, p-1)\n4.     QUICK_SORT(A, p+1, r)\n\nPARTITION(A, l, r)\n1. pivot = A[r]; i = l\n2. for j = l to r-1\n3.     if A[j] < pivot\n4.         swap A[i], A[j]; i = i+1\n5. swap A[i], A[r]\n6. return i',cx:O+'O(n log n) / O(n log n) / O(n²). Space O(log n). Not stable.'},
+merge:{n:'Merge Sort',f:'',gen:merge,d:'Divide & conquer. Split the array into halves until single elements remain, then <b>merge</b> the sorted halves back together by repeatedly taking the smaller front element.',al:'MERGE_SORT(A, l, r)\n1. if l < r\n2.     m = (l + r) / 2\n3.     MERGE_SORT(A, l, m)\n4.     MERGE_SORT(A, m+1, r)\n5.     MERGE(A, l, m, r)\n\nMERGE: copy halves to L and R;\n  repeatedly write the smaller of L[i], R[j]\n  into A[k]; copy leftovers.',cx:O+'O(n log n) in all cases. Space O(n). Stable.'},
+shell:{n:'Shell Sort',f:'',gen:shell,d:'An improved insertion sort that first sorts elements far apart (gap), then reduces the gap until it is 1. Far-away moves quickly bring elements near their final place.',al:'SHELL_SORT(A, n)\n1. for gap = n/2; gap > 0; gap = gap/2\n2.     for i = gap to n-1\n3.         temp = A[i]; j = i\n4.         while j >= gap and A[j-gap] > temp\n5.             A[j] = A[j-gap]; j = j-gap\n6.         A[j] = temp',cx:'Best O(n log n), Avg ≈ O(n^1.3), Worst O(n²) (gap n/2). Space O(1). Not stable.'},
+radix:{n:'Radix Sort',f:'',gen:radix,d:'Non-comparison sort (LSD) for non-negative integers. Distribute numbers into 10 buckets by the digit at each place (units, tens, hundreds…), collect in order, repeat for every digit.',al:'RADIX_SORT(A, n)\n1. max = largest element\n2. for exp = 1; max/exp > 0; exp = exp*10\n3.     create buckets 0..9\n4.     for each x in A (left to right)\n5.         put x in bucket[(x / exp) % 10]\n6.     copy buckets 0..9 back into A',cx:'O(d·(n+k)) where d = digits, k = 10. Space O(n+k). Stable.'}};
+/* ---------- engine ---------- */
+let cur='address',frames=[],fi=0,timer=null;
+const nav=$('nav');for(const k in T){const b=document.createElement('button');b.textContent=T[k].n;b.id='n_'+k;b.onclick=()=>pick(k);nav.append(b)}
+function vals(){return $('arr').value.split(/[ ,]+/).filter(x=>x!=='').map(Number).filter(x=>!isNaN(x)).slice(0,14)}
+function build(){stop();const t=T[cur],a=vals();if(!a.length){$('msg').textContent='Enter at least one number.';return}
+ const o={t:+$('t').value,p:+$('p').value,b:+$('b').value,w:+$('w').value,l:+$('l').value};
+ if(cur=='radix'&&a.some(v=>v<0||!Number.isInteger(v))){$('msg').textContent='Radix sort needs non-negative integers.';return}
+ const w=a.slice();frames=[{a:a.slice(),m:'Initial array. Press ▶ Play or Step.',k:{}}];
+ for(const[m,k]of t.gen(w,o))frames.push({a:w.slice(),m,k:{...k}});fi=0;show()}
+function show(){const f=frames[fi],t=T[cur],o={b:+$('b').value,w:+$('w').value,l:+$('l').value};const mx=Math.max(1,...f.a.filter(x=>x!=null).map(Math.abs));
+ $('stage').innerHTML=f.a.map((v,i)=>{const h=v==null?22:26+Math.abs(v)/mx*110;
+  return `<div class="cell">${cur=='address'?`<span class="ad">${o.b+o.w*i}</span>`:''}<div class="bar ${f.k[i]||''}" style="height:${h}px">${v==null?'—':v}</div><span class="ix">${cur=='address'?o.l+i:i}</span></div>`}).join('');
+ $('msg').textContent=f.m;$('fr').textContent=`Step ${fi}/${frames.length-1}`}
+function stop(){clearInterval(timer);timer=null;$('run').textContent='▶ Play'}
+function play(){if(timer)return stop();if(fi>=frames.length-1)fi=0;$('run').textContent='⏸ Pause';
+ timer=setInterval(()=>{if(fi<frames.length-1){fi++;show()}else stop()},1100-$('sp').value*100)}
+function pick(k){cur=k;const t=T[k];document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.id=='n_'+k));
+ $('tt').textContent=t.n;$('ds').innerHTML=t.d;$('al').textContent=t.al;$('cx').textContent=t.cx;
+ document.querySelectorAll('[data-f]').forEach(l=>l.style.display=t.f.includes(l.dataset.f)?'':'none');
+ $('t').previousSibling;document.querySelector('[data-f=t]').firstChild.textContent=k=='insert'?'Value to insert':'Target';
+ document.querySelector('[data-f=p]').firstChild.textContent=k=='address'?'Query index':'Position (index)';build()}
+$('run').onclick=play;$('next').onclick=()=>{stop();if(fi<frames.length-1){fi++;show()}};$('prev').onclick=()=>{stop();if(fi>0){fi--;show()}};
+$('rst').onclick=build;$('sp').oninput=()=>{if(timer){stop();play()}};
+$('rnd').onclick=()=>{$('arr').value=Array.from({length:8},()=>Math.floor(Math.random()*99)+1).join(',');build()};
+['arr','t','p','b','w','l'].forEach(i=>$(i).onchange=build);
+pick('address');
+</script></body></html>
